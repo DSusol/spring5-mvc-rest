@@ -9,11 +9,11 @@ import static org.junit.Assert.assertEquals;
 
 public class CategoryMapperTest {
 
-    CategoryMapper categoryMapper;
+    CategoryMapper mapperUnderTest;
 
     @Before
     public void setUp() throws Exception {
-        categoryMapper = CategoryMapper.INSTANCE;
+        mapperUnderTest = CategoryMapper.INSTANCE;
     }
 
     @Test
@@ -22,7 +22,7 @@ public class CategoryMapperTest {
         Category category = Category.builder().id(2L).name("Cat Name").build();
 
         //when
-        CategoryDTO categoryDTO = categoryMapper.convert(category);
+        CategoryDTO categoryDTO = mapperUnderTest.convert(category);
 
         //then
         assertEquals(Long.valueOf(2L), categoryDTO.getId());
