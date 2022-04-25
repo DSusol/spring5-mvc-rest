@@ -131,6 +131,27 @@ public class CustomerControllerTest {
         verify(customerService).updateCustomer(anyLong(), any(CustomerDTO.class));
     }
 
+    @Test
+    public void patchCustomer() throws Exception {
+        //given
+        CustomerDTO rawCustomer = new CustomerDTO();
+        CustomerDTO updatedCustomer = CustomerDTO.builder()
+                .firstname("Test First Name")
+                .build();
+
+        //when
+        when(customerService.patchCustomer(2L, rawCustomer)).thenReturn(updatedCustomer);
+
+        //then
+        mockMvc.perform(patch("/api/v1/customers/2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(convertToJsonString(rawCustomer)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstname", is("Test First Name")));
+
+        verify(customerService).patchCustomer(anyLong(), any(CustomerDTO.class));
+    }
+
     private String convertToJsonString(final Object object) {
         try {
             return new ObjectMapper().writeValueAsString(object);
