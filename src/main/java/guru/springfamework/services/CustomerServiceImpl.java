@@ -49,4 +49,23 @@ public class CustomerServiceImpl implements CustomerService {
         Customer savedCustomer = customerRepository.save(customerToSave);
         return customerMapper.convert(savedCustomer);
     }
+
+    @Override
+    public CustomerDTO patchCustomer(Long id, CustomerDTO customerDTO) {
+        Customer foundCustomer = customerRepository.findById(id).orElse(null);
+        if(foundCustomer == null) {
+            throw new RuntimeException("Customer not found at id = " + id);
+        }
+
+        if(customerDTO.getFirstname() != null) {
+            foundCustomer.setFirstname(customerDTO.getFirstname());
+        }
+        if(customerDTO.getLastname() != null) {
+            foundCustomer.setLastname(customerDTO.getLastname());
+        }
+
+        return customerMapper.convert(customerRepository.save(foundCustomer));
+    }
+
+
 }
