@@ -45,7 +45,7 @@ public class CustomerServiceImplTest {
         //when
         when(customerRepository.findAll()).thenReturn(customers);
         when(customerMapper.convert(any(Customer.class))).thenReturn(new CustomerDTO());
-        List<CustomerDTO> customerDTOS = serviceUnderTest.findAllCustomerDTO();
+        List<CustomerDTO> customerDTOS = serviceUnderTest.findAllCustomer();
 
         //then
         assertEquals(2, customerDTOS.size());
@@ -62,12 +62,38 @@ public class CustomerServiceImplTest {
         //when
         when(customerRepository.findByLastname("name")).thenReturn(new Customer());
         when(customerMapper.convert(customer)).thenReturn(customerDTO);
-        CustomerDTO resultCustomer = serviceUnderTest.findCustomerDTObyName("name");
+        CustomerDTO resultCustomer = serviceUnderTest.findCustomerByName("name");
 
         //then
         assertNotNull(resultCustomer);
         assertEquals("Test Name", resultCustomer.getFirstname());
         verify(customerRepository).findByLastname(anyString());
         verify(customerMapper).convert(any(Customer.class));
+    }
+
+    @Test
+    public void createNewCustomer() {
+        //given
+        CustomerDTO customerDTO = new CustomerDTO();
+        Customer revertedCustomer = new Customer();
+        Customer savedCustomer = Customer.builder().id(2L).build();
+        CustomerDTO returnedCustomerDTO = new CustomerDTO();
+
+        //when
+        when(customerMapper.reverseConvert(customerDTO)).thenReturn(revertedCustomer);
+        when(customerRepository.save(revertedCustomer)).thenReturn(savedCustomer);
+        when(customerRepository.save(savedCustomer)).thenReturn(savedCustomer);
+        when(customerMapper.convert(savedCustomer)).thenReturn(returnedCustomerDTO);
+
+        CustomerDTO resultCustomer = serviceUnderTest.createNewCustomer(customerDTO);
+
+        //then
+        assertNotNull(resultCustomer);
+        assertEquals("/shop/customers/2", savedCustomer.getUrl());
+        assertEquals(returnedCustomerDTO, resultCustomer);
+        verify(customerMapper).reverseConvert(customerDTO);
+        verify(customerRepository).save(revertedCustomer);
+        verify(customerRepository).save(savedCustomer);
+        verify(customerMapper).convert(savedCustomer);
     }
 }

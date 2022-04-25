@@ -35,4 +35,24 @@ public class CustomerMapperTest {
         assertEquals("Last Name", customerDTO.getLastname());
         assertEquals("test url", customerDTO.getUrl());
     }
+
+    @Test
+    public void reverseConvert() {
+        //given
+        CustomerDTO customerDTO = CustomerDTO.builder()
+                .id(2L)
+                .firstname("First Name")
+                .lastname("Last Name")
+                .url("test url")
+                .build();
+
+        //when
+        Customer customer = mapperUnderTest.reverseConvert(customerDTO);
+
+        //then
+        assertEquals(Long.valueOf(2L), customer.getId());
+        assertEquals("First Name", customer.getFirstname());
+        assertEquals("Last Name", customer.getLastname());
+        assertEquals("test url", customer.getUrl());
+    }
 }
