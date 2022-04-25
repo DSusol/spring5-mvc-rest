@@ -20,10 +20,10 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -104,6 +104,31 @@ public class CustomerControllerTest {
                 .andExpect(jsonPath("$.url", is("customer url")));
 
         verify(customerService).createNewCustomer(any(CustomerDTO.class));
+    }
+
+    @Test
+    public void updateCustomer() throws Exception {
+        //given
+        CustomerDTO rawCustomer = new CustomerDTO();
+        CustomerDTO updatedCustomer = CustomerDTO.builder()
+                .id(2L)
+                .firstname("Test First Name")
+                .url("Test url")
+                .build();
+
+        //when
+        when(customerService.updateCustomer(2L, rawCustomer)).thenReturn(updatedCustomer);
+
+        //then
+        mockMvc.perform(put("/api/v1/customers/2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(convertToJsonString(rawCustomer)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(2)))
+                .andExpect(jsonPath("$.firstname", is("Test First Name")))
+                .andExpect(jsonPath("$.url", is("Test url")));
+
+        verify(customerService).updateCustomer(anyLong(), any(CustomerDTO.class));
     }
 
     private String convertToJsonString(final Object object) {

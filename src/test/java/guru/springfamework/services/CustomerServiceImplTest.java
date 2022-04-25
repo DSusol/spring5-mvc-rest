@@ -96,4 +96,28 @@ public class CustomerServiceImplTest {
         verify(customerRepository).save(savedCustomer);
         verify(customerMapper).convert(savedCustomer);
     }
+
+    @Test
+    public void updateCustomer() {
+        //given
+        CustomerDTO customerDTO = new CustomerDTO();
+        Customer revertedCustomer = new Customer();
+        Customer savedCustomer = new Customer();
+        CustomerDTO returnedCustomerDTO = new CustomerDTO();
+
+        //when
+        when(customerMapper.reverseConvert(customerDTO)).thenReturn(revertedCustomer);
+        when(customerRepository.save(revertedCustomer)).thenReturn(savedCustomer);
+        when(customerMapper.convert(savedCustomer)).thenReturn(returnedCustomerDTO);
+        CustomerDTO resultCustomer = serviceUnderTest.updateCustomer(2L, customerDTO);
+
+        //then
+        assertNotNull(resultCustomer);
+        assertEquals(returnedCustomerDTO, resultCustomer);
+        assertEquals(Long.valueOf(2L), revertedCustomer.getId());
+        assertEquals("/shop/customers/2", revertedCustomer.getUrl());
+        verify(customerMapper).reverseConvert(customerDTO);
+        verify(customerRepository).save(revertedCustomer);
+        verify(customerMapper).convert(savedCustomer);
+    }
 }
