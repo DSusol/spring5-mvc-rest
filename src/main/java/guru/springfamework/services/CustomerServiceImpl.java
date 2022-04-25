@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
+    public static final String BASE_URL = "/shop/customers/";
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
 
@@ -36,7 +37,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO createNewCustomer(CustomerDTO customerDTO) {
         Customer customerToSave = customerMapper.reverseConvert(customerDTO);
         Customer savedCustomer = customerRepository.save(customerToSave);
-        savedCustomer.setUrl("/shop/customers/" + savedCustomer.getId());
+        savedCustomer.setUrl(BASE_URL + savedCustomer.getId());
         savedCustomer = customerRepository.save(savedCustomer);
         return customerMapper.convert(savedCustomer);
     }
@@ -45,7 +46,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO) {
         Customer customerToSave = customerMapper.reverseConvert(customerDTO);
         customerToSave.setId(id);
-        customerToSave.setUrl("/shop/customers/" + id);
+        customerToSave.setUrl(BASE_URL + id);
         Customer savedCustomer = customerRepository.save(customerToSave);
         return customerMapper.convert(savedCustomer);
     }

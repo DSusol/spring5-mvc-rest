@@ -24,6 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class CategoryControllerTest {
 
+    public static final String BASE_URL = "/api/v1/categories/";
+
     @Mock
     CategoryService categoryService;
 
@@ -50,7 +52,7 @@ public class CategoryControllerTest {
         when(categoryService.getAllCategories()).thenReturn(categoryListDTOS);
 
         //then
-        mockMvc.perform(get("/api/v1/categories/")
+        mockMvc.perform(get(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.categoryDTOList", hasSize(2)));
@@ -67,7 +69,7 @@ public class CategoryControllerTest {
                 .thenReturn(CategoryDTO.builder().name("testName").build());
 
         //then
-        mockMvc.perform(get("/api/v1/categories/testCategory")
+        mockMvc.perform(get(BASE_URL + "testCategory")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is("testName")));

@@ -29,6 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class CustomerControllerTest {
 
+    public static final String BASE_URL = "/api/v1/customers/";
+
     @Mock
     CustomerService customerService;
 
@@ -55,7 +57,7 @@ public class CustomerControllerTest {
         when(customerService.findAllCustomer()).thenReturn(customerDTOList);
 
         //then
-        mockMvc.perform(get("/api/v1/customers/")
+        mockMvc.perform(get(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customerDTOSList", hasSize(2)));
@@ -72,7 +74,7 @@ public class CustomerControllerTest {
         when(customerService.findCustomerByName("InputName")).thenReturn(customerDTO);
 
         //then
-        mockMvc.perform(get("/api/v1/customers/InputName")
+        mockMvc.perform(get(BASE_URL + "InputName")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstname", is("First Name")));
@@ -94,7 +96,7 @@ public class CustomerControllerTest {
         when(customerService.createNewCustomer(customerDTO)).thenReturn(returnedCustomerDTO);
 
         //then
-        mockMvc.perform(post("/api/v1/customers/")
+        mockMvc.perform(post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(convertToJsonString(customerDTO)))
                 .andDo(MockMvcResultHandlers.print())
@@ -120,7 +122,7 @@ public class CustomerControllerTest {
         when(customerService.updateCustomer(2L, rawCustomer)).thenReturn(updatedCustomer);
 
         //then
-        mockMvc.perform(put("/api/v1/customers/2")
+        mockMvc.perform(put(BASE_URL + "2")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(convertToJsonString(rawCustomer)))
                 .andExpect(status().isOk())
@@ -143,7 +145,7 @@ public class CustomerControllerTest {
         when(customerService.patchCustomer(2L, rawCustomer)).thenReturn(updatedCustomer);
 
         //then
-        mockMvc.perform(patch("/api/v1/customers/2")
+        mockMvc.perform(patch(BASE_URL + "2")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(convertToJsonString(rawCustomer)))
                 .andExpect(status().isOk())
@@ -154,7 +156,7 @@ public class CustomerControllerTest {
 
     @Test
     public void deleteCustomer() throws Exception {
-        mockMvc.perform(delete("/api/v1/customers/2"))
+        mockMvc.perform(delete(BASE_URL + "2"))
                 .andExpect(status().isOk());
 
         verify(customerService).deleteCustomerById(2L);
