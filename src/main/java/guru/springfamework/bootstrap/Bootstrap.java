@@ -2,8 +2,10 @@ package guru.springfamework.bootstrap;
 
 import guru.springfamework.domain.Category;
 import guru.springfamework.domain.Customer;
+import guru.springfamework.domain.Vendor;
 import guru.springfamework.repositories.CategoryRepository;
 import guru.springfamework.repositories.CustomerRepository;
+import guru.springfamework.repositories.VendorRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -16,10 +18,14 @@ public class Bootstrap implements CommandLineRunner {
 
     private final CategoryRepository categoryRepository;
     private final CustomerRepository customerRepository;
+    private final VendorRepository vendorRepository;
 
-    public Bootstrap(CategoryRepository categoryRepository, CustomerRepository customerRepository) {
+    public Bootstrap(CategoryRepository categoryRepository,
+                     CustomerRepository customerRepository,
+                     VendorRepository vendorRepository) {
         this.categoryRepository = categoryRepository;
         this.customerRepository = customerRepository;
+        this.vendorRepository = vendorRepository;
     }
 
 
@@ -63,5 +69,14 @@ public class Bootstrap implements CommandLineRunner {
 
         customerRepository.saveAll(List.of(joe, michael, david));
         log.debug(">>> Loaded " + customerRepository.findAll().size() + " customers.");
+
+        Vendor fruitsLtd = Vendor.builder().name("Fruits supplier ltd").build();
+        Vendor nutsLtd = Vendor.builder().name("Nuts supplier ltd").build();
+        Vendor exoticLtd = Vendor.builder().name("Exotic supplier ltd").build();
+        Vendor staffLtd = Vendor.builder().name("Staff supplier ltd").build();
+        Vendor toysLtd = Vendor.builder().name("Toys supplier ltd").build();
+
+        vendorRepository.saveAll(List.of(fruitsLtd, nutsLtd, exoticLtd, staffLtd, toysLtd));
+        log.debug(">>> Loaded " + vendorRepository.findAll().size() + " vendors.");
     }
 }
