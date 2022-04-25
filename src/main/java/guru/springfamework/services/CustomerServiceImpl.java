@@ -55,7 +55,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO patchCustomer(Long id, CustomerDTO customerDTO) {
         Customer foundCustomer = customerRepository.findById(id).orElse(null);
         if(foundCustomer == null) {
-            throw new RuntimeException("Customer not found at id = " + id);
+            throw new ResourceNotFoundException("Resource not found at id = " + id);
         }
 
         if(customerDTO.getFirstname() != null) {

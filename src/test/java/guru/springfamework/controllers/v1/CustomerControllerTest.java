@@ -3,7 +3,9 @@ package guru.springfamework.controllers.v1;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.springfamework.api.v1.model.CustomerDTO;
+import guru.springfamework.controllers.RestResponseEntityExceptionHandler;
 import guru.springfamework.services.CustomerService;
+import guru.springfamework.services.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -42,7 +44,9 @@ public class CustomerControllerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(controllerUnderTest).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(controllerUnderTest)
+                .setControllerAdvice(new RestResponseEntityExceptionHandler())
+                .build();
     }
 
     @Test
@@ -160,6 +164,15 @@ public class CustomerControllerTest {
                 .andExpect(status().isOk());
 
         verify(customerService).deleteCustomerById(2L);
+    }
+
+    @Test
+    public void testThrowException() throws Exception {
+        when(customerService.patchCustomer(22L, new CustomerDTO())).thenThrow(ResourceNotFoundException.class);
+        mockMvc.perform(patch(BASE_URL + "22")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(convertToJsonString(new CustomerDTO())))
+                .andExpect(status().isNotFound());
     }
 
     private String convertToJsonString(final Object object) {
