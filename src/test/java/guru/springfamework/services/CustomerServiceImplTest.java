@@ -120,4 +120,10 @@ public class CustomerServiceImplTest {
         verify(customerRepository).save(revertedCustomer);
         verify(customerMapper).convert(savedCustomer);
     }
+
+    @Test
+    public void deleteCustomerById() {
+        serviceUnderTest.deleteCustomerById(2L);
+        verify(customerRepository).deleteById(2L);
+    }
 }

@@ -152,6 +152,14 @@ public class CustomerControllerTest {
         verify(customerService).patchCustomer(anyLong(), any(CustomerDTO.class));
     }
 
+    @Test
+    public void deleteCustomer() throws Exception {
+        mockMvc.perform(delete("/api/v1/customers/2"))
+                .andExpect(status().isOk());
+
+        verify(customerService).deleteCustomerById(2L);
+    }
+
     private String convertToJsonString(final Object object) {
         try {
             return new ObjectMapper().writeValueAsString(object);

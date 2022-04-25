@@ -67,5 +67,10 @@ public class CustomerServiceImpl implements CustomerService {
         return customerMapper.convert(customerRepository.save(foundCustomer));
     }
 
+    @Override
+    public void deleteCustomerById(Long id) {
+        customerRepository.deleteById(id);
+    }
+
 
 }
